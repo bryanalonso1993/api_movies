@@ -1,0 +1,55 @@
+---
+version: '3.1'
+services:
+  mysql:
+    image: mysql:latest
+    restart: always
+    ports:
+      - "3306:3306"
+      - "33060:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: my_collections
+      TZ: America/Lima
+    # se agrego la siguiente validacion ya que al levantar la app desde docker compose es 
+    # necesario que la base de datos se encuentre operativo
+    healthcheck:
+      test: ["CMD-SHELL","mysql my_collections -uroot -ptest -e 'SELECT 1;'"]
+      interval: 5s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    
+    volumes:
+      - storage_mysql:/var/lib/mysql
+    networks:
+      red_interna:
+        ipv4_address: 172.21.0.11
+  flask:
+    image: flask-app:v1
+    restart: always
+    ports:
+      - "7070:7070"
+    # Dependencia de la app
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SQLALCHEMY_DATABASE_URI: "mysql+pymysql://root:test@mysql:3306/my_collections"
+      USERNAME_API: "test"
+      PASSWORD_API: "test"
+      TZ: America/Lima
+    networks:
+      red_interna:
+        ipv4_address: 172.21.0.12
+volumes:
+  storage_mysql:
+    driver: local
+
+networks:
+  red_interna:
+    name: red_interna
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/16
