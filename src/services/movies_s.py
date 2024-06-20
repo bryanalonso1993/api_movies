@@ -43,7 +43,7 @@ def create_movie_s():
     except Exception as err:
         return jsonify({ 'error': f'Excepcion controlada { err }'})
     return jsonify({
-        'data': 'Se crearon los usuarios',
+        'data': f'Se creo el registro pelicula { row['description'] }',
         'messageResponse': 'Se creo con exito los registros'
     }), 200
 

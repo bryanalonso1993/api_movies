@@ -30,17 +30,13 @@ What's Next?
 ```
 * En el archivo docker-compose.yml , se encuentran configuradas las variables de entorno de la aplicacion y las credenciales de la base de datos. **Debe cambiarlas a su gusto**
 
-```
-    # CADENA DE CONEXION A LA BASE DE DATOS
-    SQLALCHEMY_DATABASE_URI: "mysql+pymysql://<cambiar_usuario_de_conexion>:<cambiar_password_de_conexion>@mysql:3306/api"
-    # USUARIO Y PASSWORD DE LA API  
-    USERNAME_API: "<cambiar_usuario_de_api>"
-    PASSWORD_API: "<cambiar_password_de_api>"
-    # HEALTHCHECK
-    healthcheck:
-      test: ["CMD-SHELL","mysql api -uroot -p<cambiar_password_de_conexion> -e 'SELECT 1;'"]
+ **Variables de entorno de la base de datos**
 
-```
+ <img title="Crear registro pelicula" alt="Alt text" src="./img/env_credenciales_db.png">
+
+ **Variables de entorno del api Flask**
+
+ <img title="Crear registro pelicula" alt="Alt text" src="./img/env_credenciales_api.png">
 
 * Levantar la aplicacion y la base de datos ejecutando el docker-compose en background.
 
@@ -75,6 +71,44 @@ flask_tarea-mysql-1   mysql:latest   "docker-entrypoint.s…"   mysql     About 
 |  PUT  | http://<ip_servidor>:7070/api/v1/movie?id=1  |  actualizar los registros basado en id |
 |  DELETE  | http://<ip_servidor>:7070/api/v1/movie?id=1  |  eliminar los registros basado en id|
 
-* Autenticación del API: Considerar que se agregó un método de autenticación
+* Autenticación del API: Considerar que se agregó un método de autenticación HTTPBasicAuthentication
 
+##### METODO POST (CREAR REGISTROS PELICULAS)
 
+* A continuación se muestra un ejemplo de compo cargar un registro de peliculas en la tabla:
+
+<img title="Crear registro pelicula" alt="Alt text" src="./img/crear_registro_pelicula.png">
+
+* El API diseñada tambien permite cargar multiples registros de la siguiente manera:
+
+<img title="Crear multiple registros pelicula" alt="Alt text" src="./img/crear_multiples_registros.png">
+
+* Se agregó un validador de esquemas en caso se intenten cargar registros inválidos (Se observa que falta el campo author, por lo que cae en una excepción).
+
+<img title="Registro incompleto validador" alt="Alt text" src="./img/registro_incompleto.png">
+
+##### METODO GET (LISTAR REGISTRO PELICULAS)
+
+* Se muestra la siguiente consulta que trae los registros de la tabla my_collections
+
+<img title="Listar registros DB" alt="Alt text" src="./img/listar_registros_pelicula.png">
+
+##### METODO PUT (ACTUALIZAR REGISTRO DE PELICULA)
+
+* El siguiente método se utilizar para actualizar los registros de la tabla de peliculas basandose en el id
+
+<img title="Actualizar registro de peliculas" alt="Alt text" src="./img/actualizar_registro_peliculas.png">
+
+* Se valida el cambio del registro id=2
+
+<img title="Actualizar registro de peliculas" alt="Alt text" src="./img/validar_cambios_update.png">
+
+##### METODO DELETE (ELIMINAR REGISTRO DE PELICULA)
+
+* Adicional se añadió un método para poder eliminar los registros de la tabla.
+
+<img title="Eliminar registro de peliculas" alt="Alt text" src="./img/eliminar_usuario.png">
+
+* Validar usuario eliminado
+
+<img title="Listar luego del eliminado" alt="Alt text" src="./img/lista_de_usuarios_luego_eliminarlo.png">
